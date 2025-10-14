@@ -25,10 +25,18 @@
             text-align: center;
         }
 
-        .banner {
-            max-width: 100%;
-            height: auto;
+        .banner-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
             margin-bottom: 20px;
+        }
+
+        .banner {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            object-position: center;
         }
 
         h1 {
@@ -86,7 +94,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-top: 30px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
 
@@ -136,6 +144,8 @@
             text-transform: lowercase;
             width: 80px;
             text-align: center;
+            display: none !important;
+            position: absolute;
         }
 
         .archive {
@@ -186,19 +196,17 @@
 <body>
 
 <header>
-    <img src="banner.png" alt="zyxabc banner" class="banner">
+    <div class="banner-container">
+        <img src="banner.png" alt="zyxabc banner" class="banner" id="bannerImg">
+    </div>
     <h1>zyxabc</h1>
-    <p class="tagline">a webcomic about absurdity</p>
+    <p class="tagline">a webcomic about stuff sometimes.</p>
 </header>
 
 <div class="container">
     <div class="comic-display">
         <h2 id="comicTitle"></h2>
         <img id="currentComic" src="" alt="current comic strip">
-    </div>
-
-    <div class="comic-info">
-        <p id="comicDescription">welcome to zyxabc, a weekly webcomic updated every friday. join us for strange stories and bizarre characters in a world that makes no sense.</p>
     </div>
 
     <div class="navigation">
@@ -208,6 +216,10 @@
         <span id="comicNumber" class="comic-number" onclick="toggleComicInput()"></span>
         <button class="nav-btn" id="nextBtn" onclick="nextComic()">next</button>
         <button class="nav-btn" id="latestBtn" onclick="goToLatest()">latest</button>
+    </div>
+
+    <div class="comic-info">
+        <p id="comicDescription">zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.</p>
     </div>
 
     <div class="archive">
@@ -220,9 +232,11 @@
     <p>&copy; 2025 zyxabc. all rights reserved.</p>
 </footer>
 
+<input type="number" id="comicInput" onkeyup="handleComicInput(event)" onblur="toggleComicInput()">
+
 <script>
-    const TAGLINE = 'a webcomic about absurdity';
-    const DESCRIPTION = 'welcome to zyxabc, a weekly webcomic updated every friday. join us for strange stories and bizarre characters in a world that makes no sense.';
+    const TAGLINE = 'a webcomic about stuff sometimes.';
+    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.';
     const PREFIX = 'zyxabc_';
 
     let currentComic = 1;
@@ -234,7 +248,6 @@
     }
 
     function findComicName() {
-        // Try numbers 1-100 to find the first comic file that exists
         let found = false;
         
         for (let i = 1; i <= 100; i++) {
@@ -242,15 +255,11 @@
             img.onload = function() {
                 if (!found) {
                     found = true;
-                    // Extract filename from src
                     const filename = this.src.split('/').pop();
-                    
-                    // Use regex to extract title from zyxabc_comicname1.png pattern
                     const pattern = /zyxabc_([A-Za-z_]+?)_?(\d+)/;
                     const match = filename.match(pattern);
                     
                     if (match) {
-                        // match[1] is the name part, replace underscores with spaces
                         comicName = match[1].replace(/_+/g, ' ').trim();
                         countComics();
                     }
@@ -259,7 +268,6 @@
             img.src = `${PREFIX}*${i}.png`;
         }
         
-        // Fallback if nothing found
         setTimeout(() => {
             if (!found) {
                 console.log('No comic files found');
@@ -277,9 +285,6 @@
             testImg.onload = function() {
                 maxFound = Math.max(maxFound, i);
             };
-            testImg.onerror = function() {
-                // File doesn't exist, stop checking higher numbers
-            };
             testImg.src = getComicPath(i);
         }
         
@@ -296,7 +301,7 @@
         document.getElementById('currentComic').src = getComicPath(num);
         document.getElementById('comicNumber').textContent = `comic ${num} of ${totalComics}`;
         document.getElementById('comicNumber').style.display = 'inline-block';
-        document.getElementById('comicInput').style.display = 'none';
+        document.getElementById('comicInput').style.display = 'none !important';
         
         const displayTitle = comicName.replace(/_/g, ' ');
         document.getElementById('comicTitle').textContent = displayTitle;
@@ -334,9 +339,9 @@
         const numberSpan = document.getElementById('comicNumber');
         const input = document.getElementById('comicInput');
         
-        if (input.style.display === 'none') {
+        if (input.style.display === 'none !important') {
             numberSpan.style.display = 'none';
-            input.style.display = 'inline-block';
+            input.style.display = 'inline-block !important';
             input.value = currentComic;
             input.focus();
             input.select();
@@ -350,11 +355,11 @@
                 loadComic(num);
             } else {
                 document.getElementById('comicNumber').style.display = 'inline-block';
-                e.target.style.display = 'none';
+                e.target.style.display = 'none !important';
             }
         } else if (e.key === 'Escape') {
             document.getElementById('comicNumber').style.display = 'inline-block';
-            e.target.style.display = 'none';
+            e.target.style.display = 'none !important';
         }
     }
 
@@ -387,19 +392,19 @@
     function initPage() {
         document.querySelector('.tagline').textContent = TAGLINE;
         document.getElementById('comicDescription').textContent = DESCRIPTION;
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.id = 'comicInput';
-        input.style.display = 'none';
-        input.onkeyup = handleComicInput;
-        input.onblur = toggleComicInput;
-        document.getElementById('comicNumber').parentElement.appendChild(input);
-        
         goToLatest();
         generateArchive();
     }
 
     window.addEventListener('load', findComicName);
+
+    window.addEventListener('scroll', () => {
+        const banner = document.getElementById('bannerImg');
+        if (banner) {
+            const scrollY = window.scrollY;
+            banner.style.transform = `translateY(${scrollY * 0.5}px)`;
+        }
+    });
 </script>
 
 </body>
