@@ -221,8 +221,8 @@
 </footer>
 
 <script>
-    const TAGLINE = 'a webcomic about science, math, and other stuff sometimes.';
-    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics every friday night, if i dont forget. please give credit if you share my stuff! thank you.';
+    const TAGLINE = 'a webcomic about absurdity';
+    const DESCRIPTION = 'welcome to zyxabc, a weekly webcomic updated every friday. join us for strange stories and bizarre characters in a world that makes no sense.';
     const PREFIX = 'zyxabc_';
 
     let currentComic = 1;
@@ -236,31 +236,50 @@
     function findComicName() {
         const img = new Image();
         img.onload = function() {
-            const filename = this.src.split('/').pop();
-            const withoutPrefix = filename.replace(PREFIX, '');
-            const withoutExtension = withoutPrefix.replace('.png', '');
-            comicName = withoutExtension.replace(/\d+$/, '');
-            countComics();
+            // Extract filename from src
+            const fullPath = this.src;
+            const filename = fullPath.split('/').pop();
+            
+            // Use regex to extract title from zyxabc_comicname1.png pattern
+            const pattern = /zyxabc_([A-Za-z_]+?)_?(\d+)/;
+            const match = filename.match(pattern);
+            
+            if (match) {
+                // match[1] is the name part, replace underscores with spaces
+                comicName = match[1].replace(/_+/g, ' ').trim();
+                countComics();
+            } else {
+                console.log('Could not parse filename');
+                totalComics = 1;
+                initPage();
+            }
         };
         img.onerror = function() {
-            console.log('Could not find comic files');
+            console.log('Comic file not found');
+            totalComics = 1;
+            initPage();
         };
-        img.src = `${PREFIX}*1.png`;
+        img.src = `${PREFIX}pop1.png`;
     }
 
     function countComics() {
-        let count = 0;
+        let maxFound = 1;
+        
         for (let i = 1; i <= 1000; i++) {
             const testImg = new Image();
             testImg.onload = function() {
-                count = i;
+                maxFound = Math.max(maxFound, i);
+            };
+            testImg.onerror = function() {
+                // File doesn't exist, stop checking higher numbers
             };
             testImg.src = getComicPath(i);
         }
+        
         setTimeout(() => {
-            totalComics = count || 1;
+            totalComics = maxFound;
             initPage();
-        }, 500);
+        }, 1000);
     }
 
     function loadComic(num) {
