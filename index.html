@@ -1,21 +1,4 @@
-function loadComic(comicNumber) {
-        if (comicNumber < 1 || comicNumber > TOTAL_COMICS) return;
-        
-        currentComic = comicNumber;
-        const imagePath = `${PREFIX}${comicName}${comicNumber}.png`;
-        
-        document.getElementById('currentComic').src = imagePath;
-        document.getElementById('comicNumber').textContent = `comic ${comicNumber} of ${TOTAL_COMICS}`;
-        document.getElementById('comicNumber').style.display = 'inline-block';
-        document.getElementById('comicInput').style.display = 'none';
-        
-        // Display comic title (replace underscores with spaces)
-        const displayTitle = comicName.replace(/_/g, ' ');
-        document.getElementById('comicTitle').textContent = displayTitle;
-        
-        updateNavigationButtons();
-        window.scrollTo(0, 0);
-    }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -81,6 +64,13 @@ function loadComic(comicNumber) {
             color: #333;
         }
 
+        .comic-display img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
         .comic-info {
             margin-bottom: 30px;
             line-height: 1.8;
@@ -130,6 +120,7 @@ function loadComic(comicNumber) {
             text-transform: lowercase;
             display: inline-block;
             transition: background-color 0.2s;
+            cursor: pointer;
         }
 
         .comic-number:hover {
@@ -214,7 +205,7 @@ function loadComic(comicNumber) {
         <button class="nav-btn" id="firstBtn" onclick="goToComic(1)">first</button>
         <button class="nav-btn" id="prevBtn" onclick="previousComic()">previous</button>
         <button class="nav-btn" id="randomBtn" onclick="randomComic()">random</button>
-        <span id="comicNumber" class="comic-number" onclick="toggleComicInput()" style="cursor: pointer;"></span>
+        <span id="comicNumber" class="comic-number" onclick="toggleComicInput()"></span>
         <button class="nav-btn" id="nextBtn" onclick="nextComic()">next</button>
         <button class="nav-btn" id="latestBtn" onclick="goToLatest()">latest</button>
     </div>
@@ -227,52 +218,90 @@ function loadComic(comicNumber) {
 
 <footer>
     <p>&copy; 2025 zyxabc. all rights reserved.</p>
-    <input type="number" id="comicInput" style="display: none;" onkeyup="handleComicInput(event)" onblur="toggleComicInput()">
 </footer>
 
 <script>
-    // === EDIT THESE VARIABLES ===
-    const TOTAL_COMICS = 1; // update this when you add new comics
-    const TAGLINE = 'a webcomic about science, math, and other stuff sometimes.'; // change the tagline
-    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics every friday night, if i dont forget. please give credit if you share my stuff! thank you.'; // change the description
-    const PREFIX = 'zyxabc_'; // files should be named like: zyxabc_comicname1.png
-    // ============================
+    const TAGLINE = 'a webcomic about science, math, and other stuff sometimes.';
+    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics every friday night, if i dont forget. please give credit if you share my stuff! thank you.';
+    const PREFIX = 'zyxabc_';
 
     let currentComic = 1;
     let comicName = '';
+    let totalComics = 1;
 
-    function loadComic(comicNumber) {
-        if (comicNumber < 1 || comicNumber > TOTAL_COMICS) return;
+    function getComicPath(num) {
+        return `${PREFIX}${comicName}${num}.png`;
+    }
+
+    function findComicName() {
+        const img = new Image();
+        img.onload = function() {
+            const filename = this.src.split('/').pop();
+            const withoutPrefix = filename.replace(PREFIX, '');
+            const withoutExtension = withoutPrefix.replace('.png', '');
+            comicName = withoutExtension.replace(/\d+$/, '');
+            countComics();
+        };
+        img.onerror = function() {
+            console.log('Could not find comic files');
+        };
+        img.src = `${PREFIX}*1.png`;
+    }
+
+    function countComics() {
+        let count = 0;
+        for (let i = 1; i <= 1000; i++) {
+            const testImg = new Image();
+            testImg.onload = function() {
+                count = i;
+            };
+            testImg.src = getComicPath(i);
+        }
+        setTimeout(() => {
+            totalComics = count || 1;
+            initPage();
+        }, 500);
+    }
+
+    function loadComic(num) {
+        if (num < 1 || num > totalComics) return;
         
-        currentComic = comicNumber;
-        const imagePath = `${COMIC_NAME}${comicNumber}.png`;
-        
-        document.getElementById('currentComic').src = imagePath;
-        document.getElementById('comicNumber').textContent = `comic ${comicNumber} of ${TOTAL_COMICS}`;
+        currentComic = num;
+        document.getElementById('currentComic').src = getComicPath(num);
+        document.getElementById('comicNumber').textContent = `comic ${num} of ${totalComics}`;
         document.getElementById('comicNumber').style.display = 'inline-block';
         document.getElementById('comicInput').style.display = 'none';
         
-        // Extract comic title from filename (remove numbers, replace underscores with spaces)
-        const comicTitle = COMIC_NAME.replace(/_/g, ' ');
-        document.getElementById('comicTitle').textContent = comicTitle;
+        const displayTitle = comicName.replace(/_/g, ' ');
+        document.getElementById('comicTitle').textContent = displayTitle;
         
         updateNavigationButtons();
         window.scrollTo(0, 0);
     }
 
-    function findComicName() {
-        // Try to find the first comic file to extract the name
-        const testNames = ['pop', 'zyxabc', 'comic'];
-        for (let name of testNames) {
-            const testImg = new Image();
-            testImg.src = `${name}1.png`;
-            testImg.onload = () => {
-                if (document.getElementById('currentComic').src === '') {
-                    window.COMIC_NAME = name;
-                    initPage();
-                }
-            };
+    function nextComic() {
+        if (currentComic < totalComics) {
+            loadComic(currentComic + 1);
         }
+    }
+
+    function previousComic() {
+        if (currentComic > 1) {
+            loadComic(currentComic - 1);
+        }
+    }
+
+    function goToComic(num) {
+        loadComic(num);
+    }
+
+    function goToLatest() {
+        loadComic(totalComics);
+    }
+
+    function randomComic() {
+        const random = Math.floor(Math.random() * totalComics) + 1;
+        loadComic(random);
     }
 
     function toggleComicInput() {
@@ -303,49 +332,24 @@ function loadComic(comicNumber) {
         }
     }
 
-    function randomComic() {
-        const random = Math.floor(Math.random() * TOTAL_COMICS) + 1;
-        loadComic(random);
-    }
-
-    function nextComic() {
-        if (currentComic < TOTAL_COMICS) {
-            loadComic(currentComic + 1);
-        }
-    }
-
-    function previousComic() {
-        if (currentComic > 1) {
-            loadComic(currentComic - 1);
-        }
-    }
-
-    function goToComic(num) {
-        loadComic(num);
-    }
-
-    function goToLatest() {
-        loadComic(TOTAL_COMICS);
-    }
-
     function updateNavigationButtons() {
         document.getElementById('prevBtn').disabled = currentComic === 1;
         document.getElementById('firstBtn').disabled = currentComic === 1;
-        document.getElementById('nextBtn').disabled = currentComic === TOTAL_COMICS;
-        document.getElementById('latestBtn').disabled = currentComic === TOTAL_COMICS;
+        document.getElementById('nextBtn').disabled = currentComic === totalComics;
+        document.getElementById('latestBtn').disabled = currentComic === totalComics;
     }
 
     function generateArchive() {
         const grid = document.getElementById('archiveGrid');
         grid.innerHTML = '';
         
-        for (let i = 1; i <= TOTAL_COMICS; i++) {
+        for (let i = 1; i <= totalComics; i++) {
             const item = document.createElement('div');
             item.className = 'archive-item';
             item.onclick = () => loadComic(i);
             
             const img = document.createElement('img');
-            img.src = `${PREFIX}${comicName}${i}.png`;
+            img.src = getComicPath(i);
             img.alt = `comic ${i}`;
             img.onerror = () => { img.style.display = 'none'; };
             
@@ -357,11 +361,19 @@ function loadComic(comicNumber) {
     function initPage() {
         document.querySelector('.tagline').textContent = TAGLINE;
         document.getElementById('comicDescription').textContent = DESCRIPTION;
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.id = 'comicInput';
+        input.style.display = 'none';
+        input.onkeyup = handleComicInput;
+        input.onblur = toggleComicInput;
+        document.getElementById('comicNumber').parentElement.appendChild(input);
+        
         goToLatest();
         generateArchive();
     }
 
-    window.addEventListener('load', initPage);
+    window.addEventListener('load', findComicName);
 </script>
 
 </body>
