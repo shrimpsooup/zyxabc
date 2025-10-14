@@ -1,4 +1,21 @@
-<!DOCTYPE html>
+function loadComic(comicNumber) {
+        if (comicNumber < 1 || comicNumber > TOTAL_COMICS) return;
+        
+        currentComic = comicNumber;
+        const imagePath = `${PREFIX}${comicName}${comicNumber}.png`;
+        
+        document.getElementById('currentComic').src = imagePath;
+        document.getElementById('comicNumber').textContent = `comic ${comicNumber} of ${TOTAL_COMICS}`;
+        document.getElementById('comicNumber').style.display = 'inline-block';
+        document.getElementById('comicInput').style.display = 'none';
+        
+        // Display comic title (replace underscores with spaces)
+        const displayTitle = comicName.replace(/_/g, ' ');
+        document.getElementById('comicTitle').textContent = displayTitle;
+        
+        updateNavigationButtons();
+        window.scrollTo(0, 0);
+    }<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -215,13 +232,14 @@
 
 <script>
     // === EDIT THESE VARIABLES ===
-    const COMIC_NAME = 'zyxabc';
     const TOTAL_COMICS = 1; // update this when you add new comics
-    const TAGLINE = 'a webcomic about science, math, and other things sometimes.'; // change the tagline
-    const DESCRIPTION = 'zyxabc is a comic made by andre hamghalam. comics come out most fridays, if i dont procrastinate. please give credit if you share my stuff! thank you.'; // change the description
+    const TAGLINE = 'a webcomic about science, math, and other stuff sometimes.'; // change the tagline
+    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics every friday night, if i dont forget. please give credit if you share my stuff! thank you.'; // change the description
+    const PREFIX = 'zyxabc_'; // files should be named like: zyxabc_comicname1.png
     // ============================
 
     let currentComic = 1;
+    let comicName = '';
 
     function loadComic(comicNumber) {
         if (comicNumber < 1 || comicNumber > TOTAL_COMICS) return;
@@ -327,7 +345,7 @@
             item.onclick = () => loadComic(i);
             
             const img = document.createElement('img');
-            img.src = `${COMIC_NAME}${i}.png`;
+            img.src = `${PREFIX}${comicName}${i}.png`;
             img.alt = `comic ${i}`;
             img.onerror = () => { img.style.display = 'none'; };
             
