@@ -216,9 +216,9 @@
 <script>
     // === EDIT THESE VARIABLES ===
     const COMIC_NAME = 'zyxabc';
-    const TOTAL_COMICS = 1; // update this when i add new comics
-    const TAGLINE = 'a webcomic about science, math, and other stuff sometimes.'; // wanna change the tagline?
-    const DESCRIPTION = 'zyxabc is made by andre hamghalam. comics come out most fridays, if i havent procrastinated.'; // wanna change the description?
+    const TOTAL_COMICS = 1; // update this when you add new comics
+    const TAGLINE = 'a webcomic about science, math, and other things sometimes.'; // change the tagline
+    const DESCRIPTION = 'zyxabc is a comic made by andre hamghalam. comics come out most fridays, if i dont procrastinate. please give credit if you share my stuff! thank you.'; // change the description
     // ============================
 
     let currentComic = 1;
@@ -234,12 +234,27 @@
         document.getElementById('comicNumber').style.display = 'inline-block';
         document.getElementById('comicInput').style.display = 'none';
         
-        // Extract and display comic title (name before number, replace underscores with spaces)
+        // Extract comic title from filename (remove numbers, replace underscores with spaces)
         const comicTitle = COMIC_NAME.replace(/_/g, ' ');
         document.getElementById('comicTitle').textContent = comicTitle;
         
         updateNavigationButtons();
         window.scrollTo(0, 0);
+    }
+
+    function findComicName() {
+        // Try to find the first comic file to extract the name
+        const testNames = ['pop', 'zyxabc', 'comic'];
+        for (let name of testNames) {
+            const testImg = new Image();
+            testImg.src = `${name}1.png`;
+            testImg.onload = () => {
+                if (document.getElementById('currentComic').src === '') {
+                    window.COMIC_NAME = name;
+                    initPage();
+                }
+            };
+        }
     }
 
     function toggleComicInput() {
