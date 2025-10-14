@@ -188,7 +188,7 @@
 <header>
     <img src="banner.png" alt="zyxabc banner" class="banner">
     <h1>zyxabc</h1>
-    <p class="tagline">a webcomic about stuff sometimes.</p>
+    <p class="tagline">a webcomic about absurdity</p>
 </header>
 
 <div class="container">
@@ -198,7 +198,7 @@
     </div>
 
     <div class="comic-info">
-        <p id="comicDescription">zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.</p>
+        <p id="comicDescription">welcome to zyxabc, a weekly webcomic updated every friday. join us for strange stories and bizarre characters in a world that makes no sense.</p>
     </div>
 
     <div class="navigation">
@@ -221,8 +221,8 @@
 </footer>
 
 <script>
-    const TAGLINE = 'a webcomic about stuff sometimes.';
-    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.';
+    const TAGLINE = 'a webcomic about absurdity';
+    const DESCRIPTION = 'welcome to zyxabc, a weekly webcomic updated every friday. join us for strange stories and bizarre characters in a world that makes no sense.';
     const PREFIX = 'zyxabc_';
 
     let currentComic = 1;
@@ -234,32 +234,39 @@
     }
 
     function findComicName() {
-        const img = new Image();
-        img.onload = function() {
-            // Extract filename from src
-            const fullPath = this.src;
-            const filename = fullPath.split('/').pop();
-            
-            // Use regex to extract title from zyxabc_comicname1.png pattern
-            const pattern = /zyxabc_([A-Za-z_]+?)_?(\d+)/;
-            const match = filename.match(pattern);
-            
-            if (match) {
-                // match[1] is the name part, replace underscores with spaces
-                comicName = match[1].replace(/_+/g, ' ').trim();
-                countComics();
-            } else {
-                console.log('Could not parse filename');
+        // Try numbers 1-100 to find the first comic file that exists
+        let found = false;
+        
+        for (let i = 1; i <= 100; i++) {
+            const img = new Image();
+            img.onload = function() {
+                if (!found) {
+                    found = true;
+                    // Extract filename from src
+                    const filename = this.src.split('/').pop();
+                    
+                    // Use regex to extract title from zyxabc_comicname1.png pattern
+                    const pattern = /zyxabc_([A-Za-z_]+?)_?(\d+)/;
+                    const match = filename.match(pattern);
+                    
+                    if (match) {
+                        // match[1] is the name part, replace underscores with spaces
+                        comicName = match[1].replace(/_+/g, ' ').trim();
+                        countComics();
+                    }
+                }
+            };
+            img.src = `${PREFIX}*${i}.png`;
+        }
+        
+        // Fallback if nothing found
+        setTimeout(() => {
+            if (!found) {
+                console.log('No comic files found');
                 totalComics = 1;
                 initPage();
             }
-        };
-        img.onerror = function() {
-            console.log('Comic file not found');
-            totalComics = 1;
-            initPage();
-        };
-        img.src = `${PREFIX}pop1.png`;
+        }, 500);
     }
 
     function countComics() {
@@ -397,6 +404,3 @@
 
 </body>
 </html>
-
-
-
