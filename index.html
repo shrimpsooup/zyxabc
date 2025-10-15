@@ -25,18 +25,10 @@
             text-align: center;
         }
 
-        .banner-container {
-            width: 100%;
-            height: 300px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
         .banner {
-            width: 100%;
-            height: 600px;
-            object-fit: cover;
-            object-position: center;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -196,9 +188,7 @@
 <body>
 
 <header>
-    <div class="banner-container">
-        <img src="banner.png" alt="zyxabc banner" class="banner" id="bannerImg">
-    </div>
+    <img src="banner.png" alt="zyxabc banner" class="banner">
     <h1>zyxabc</h1>
     <p class="tagline">a webcomic about stuff sometimes.</p>
 </header>
@@ -219,7 +209,7 @@
     </div>
 
     <div class="comic-info">
-        <p id="comicDescription">zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.</p>
+        <p id="comicDescription">zyxabc is made by andre hamghalam. new comics most fridays.</p>
     </div>
 
     <div class="archive">
@@ -236,75 +226,57 @@
 
 <script>
     const TAGLINE = 'a webcomic about stuff sometimes.';
-    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.';
+    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridayse.';
     const PREFIX = 'zyxabc_';
 
     let currentComic = 1;
-    let comicName = '';
-    let totalComics = 1;
+    let comics = []; // Will store array of {name: "pop", number: 1} objects
+    let totalComics = 0;
 
-    function getComicPath(num) {
-        return `${PREFIX}${comicName}${num}.png`;
-    }
-
-    function findComicName() {
-        let found = false;
-        
-        for (let i = 1; i <= 100; i++) {
-            const img = new Image();
-            img.onload = function() {
-                if (!found) {
-                    found = true;
-                    const filename = this.src.split('/').pop();
-                    const pattern = /zyxabc_([A-Za-z_]+?)_?(\d+)/;
-                    const match = filename.match(pattern);
-                    
-                    if (match) {
-                        comicName = match[1].replace(/_+/g, ' ').trim();
-                        countComics();
-                    }
-                }
-            };
-            img.src = `${PREFIX}*${i}.png`;
-        }
-        
-        setTimeout(() => {
-            if (!found) {
-                console.log('No comic files found');
+    function loadComicsFromJSON() {
+        fetch('comics.json')
+            .then(response => response.json())
+            .then(data => {
+                comics = data.comics.sort((a, b) => a.number - b.number);
+                totalComics = comics.length;
+                initPage();
+            })
+            .catch(error => {
+                console.error('Could not load comics.json:', error);
                 totalComics = 1;
                 initPage();
-            }
-        }, 500);
+            });
     }
+
+    function getComicPath(index) {
+        if (index < 1 || index > comics.length) return '';
+        const comic = comics[index - 1];
+        return `${PREFIX}${comic.name}${comic.number}.png`;
+    }
+
+    function getComicDisplayName(index) {
+        if (index < 1 || index > comics.length) return '';
+        const comic = comics[index - 1];
+        return comic.name.replace(/_/g, ' ');
+    }
+
+
 
     function countComics() {
-        let maxFound = 1;
-        
-        for (let i = 1; i <= 1000; i++) {
-            const testImg = new Image();
-            testImg.onload = function() {
-                maxFound = Math.max(maxFound, i);
-            };
-            testImg.src = getComicPath(i);
-        }
-        
-        setTimeout(() => {
-            totalComics = maxFound;
-            initPage();
-        }, 1000);
+        // Comics already loaded from JSON, no need to count
+        initPage();
     }
 
-    function loadComic(num) {
-        if (num < 1 || num > totalComics) return;
+    function loadComic(index) {
+        if (index < 1 || index > totalComics) return;
         
-        currentComic = num;
-        document.getElementById('currentComic').src = getComicPath(num);
-        document.getElementById('comicNumber').textContent = `comic ${num} of ${totalComics}`;
+        currentComic = index;
+        document.getElementById('currentComic').src = getComicPath(index);
+        document.getElementById('comicNumber').textContent = `comic ${index} of ${totalComics}`;
         document.getElementById('comicNumber').style.display = 'inline-block';
         document.getElementById('comicInput').style.display = 'none !important';
         
-        const displayTitle = comicName.replace(/_/g, ' ');
-        document.getElementById('comicTitle').textContent = displayTitle;
+        document.getElementById('comicTitle').textContent = getComicDisplayName(index);
         
         updateNavigationButtons();
         window.scrollTo(0, 0);
@@ -396,15 +368,7 @@
         generateArchive();
     }
 
-    window.addEventListener('load', findComicName);
-
-    window.addEventListener('scroll', () => {
-        const banner = document.getElementById('bannerImg');
-        if (banner) {
-            const scrollY = window.scrollY;
-            banner.style.transform = `translateY(${scrollY * 0.5}px)`;
-        }
-    });
+    window.addEventListener('load', loadComicsFromJSON);
 </script>
 
 </body>
