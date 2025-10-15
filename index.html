@@ -239,18 +239,21 @@
             .then(data => {
                 comics = data.comics.sort((a, b) => a.number - b.number);
                 totalComics = comics.length;
+                console.log('Loaded comics:', comics);
+                console.log('Total comics:', totalComics);
                 initPage();
             })
             .catch(error => {
                 console.error('Could not load comics.json:', error);
-                totalComics = 1;
-                initPage();
+                alert('Could not load comics.json. Make sure the file exists!');
+                totalComics = 0;
             });
     }
 
     function getComicPath(index) {
         if (index < 1 || index > comics.length) return '';
         const comic = comics[index - 1];
+        // Build path as: zyxabc_name_number.png (e.g., zyxabc_pop1.png)
         return `${PREFIX}${comic.name}${comic.number}.png`;
     }
 
@@ -271,7 +274,9 @@
         if (index < 1 || index > totalComics) return;
         
         currentComic = index;
-        document.getElementById('currentComic').src = getComicPath(index);
+        const path = getComicPath(index);
+        console.log('Loading comic path:', path);
+        document.getElementById('currentComic').src = path;
         document.getElementById('comicNumber').textContent = `comic ${index} of ${totalComics}`;
         document.getElementById('comicNumber').style.display = 'inline-block';
         document.getElementById('comicInput').style.display = 'none !important';
@@ -373,4 +378,3 @@
 
 </body>
 </html>
-
