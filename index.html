@@ -225,29 +225,25 @@
 <input type="number" id="comicInput" onkeyup="handleComicInput(event)" onblur="toggleComicInput()">
 
 <script>
-    const TAGLINE = 'a webcomic about stuff sometimes.';
+    const TAGLINE = 'a webcomic about stuff sometimes';
     const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridays.';
     const PREFIX = 'zyxabc_';
+    
+    // ADD YOUR COMICS HERE - just add new entries when you upload new comics!
+    const COMICS_LIST = [
+        {name: "pop", number: 1},
+        {name: "ex_browser", number: 2}
+        // Add more like: {name: "comic_name", number: 3},
+    ];
 
     let currentComic = 1;
-    let comics = []; // Will store array of {name: "pop", number: 1} objects
+    let comics = [];
     let totalComics = 0;
 
-    function loadComicsFromJSON() {
-        fetch('comics.json')
-            .then(response => response.json())
-            .then(data => {
-                comics = data.comics.sort((a, b) => a.number - b.number);
-                totalComics = comics.length;
-                console.log('Loaded comics:', comics);
-                console.log('Total comics:', totalComics);
-                initPage();
-            })
-            .catch(error => {
-                console.error('Could not load comics.json:', error);
-                alert('Could not load comics.json. Make sure the file exists!');
-                totalComics = 0;
-            });
+    function loadComicsFromList() {
+        comics = COMICS_LIST.sort((a, b) => a.number - b.number);
+        totalComics = comics.length;
+        initPage();
     }
 
     function getComicPath(index) {
@@ -275,7 +271,6 @@
         
         currentComic = index;
         const path = getComicPath(index);
-        console.log('Loading comic path:', path);
         document.getElementById('currentComic').src = path;
         document.getElementById('comicNumber').textContent = `comic ${index} of ${totalComics}`;
         document.getElementById('comicNumber').style.display = 'inline-block';
@@ -373,7 +368,7 @@
         generateArchive();
     }
 
-    window.addEventListener('load', loadComicsFromJSON);
+    window.addEventListener('load', loadComicsFromList);
 </script>
 
 </body>
