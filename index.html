@@ -5,44 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>zyxabc</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: arial, sans-serif;
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
         }
-
         header {
             background-color: #fff;
             border-bottom: 2px solid #333;
             padding: 20px;
             text-align: center;
         }
-
-        .banner {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-transform: lowercase;
-        }
-
-        .tagline {
-            font-size: 1.1em;
-            color: #666;
-            text-transform: lowercase;
-        }
-
+        .banner { max-width: 100%; height: auto; margin-bottom: 20px; }
+        h1 { font-size: 2.5em; margin-bottom: 10px; text-transform: lowercase; }
+        .tagline { font-size: 1.1em; color: #666; text-transform: lowercase; }
         .container {
             max-width: 900px;
             margin: 30px auto;
@@ -52,36 +30,11 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .comic-display {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .comic-display h2 {
-            text-transform: lowercase;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .comic-display img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-
-        .comic-info {
-            margin-bottom: 30px;
-            line-height: 1.8;
-        }
-
-        .comic-info p {
-            margin-bottom: 15px;
-            text-align: justify;
-            text-transform: lowercase;
-        }
-
+        .comic-display { text-align: center; margin-bottom: 30px; }
+        .comic-display h2 { text-transform: lowercase; margin-bottom: 20px; color: #333; }
+        .comic-display img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 3px; }
+        .comic-info { margin-bottom: 30px; line-height: 1.8; }
+        .comic-info p { margin-bottom: 15px; text-align: justify; text-transform: lowercase; }
         .navigation {
             display: flex;
             justify-content: center;
@@ -89,7 +42,6 @@
             margin-bottom: 30px;
             flex-wrap: wrap;
         }
-
         .nav-btn {
             padding: 10px 20px;
             background-color: #333;
@@ -98,20 +50,11 @@
             border-radius: 3px;
             cursor: pointer;
             font-size: 1em;
-            font-family: arial, sans-serif;
             text-transform: lowercase;
             transition: background-color 0.3s;
         }
-
-        .nav-btn:hover {
-            background-color: #555;
-        }
-
-        .nav-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
+        .nav-btn:hover { background-color: #555; }
+        .nav-btn:disabled { background-color: #ccc; cursor: not-allowed; }
         .comic-number {
             padding: 10px 15px;
             background-color: #f0f0f0;
@@ -122,11 +65,7 @@
             transition: background-color 0.2s;
             cursor: pointer;
         }
-
-        .comic-number:hover {
-            background-color: #e0e0e0;
-        }
-
+        .comic-number:hover { background-color: #e0e0e0; }
         #comicInput {
             padding: 8px 12px;
             border: 1px solid #333;
@@ -139,24 +78,17 @@
             display: none;
             position: absolute;
         }
-
         .archive {
             margin-top: 40px;
             padding-top: 30px;
             border-top: 2px solid #ddd;
         }
-
-        .archive h2 {
-            text-transform: lowercase;
-            margin-bottom: 20px;
-        }
-
+        .archive h2 { text-transform: lowercase; margin-bottom: 20px; }
         .archive-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
         }
-
         .archive-item {
             border: 1px solid #ddd;
             border-radius: 3px;
@@ -164,17 +96,8 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-
-        .archive-item:hover {
-            transform: scale(1.05);
-        }
-
-        .archive-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
+        .archive-item:hover { transform: scale(1.05); }
+        .archive-item img { width: 100%; height: auto; display: block; }
         footer {
             text-align: center;
             padding: 20px;
@@ -225,22 +148,21 @@
 <input type="number" id="comicInput" onkeyup="handleComicInput(event)" onblur="toggleComicInput()">
 
 <script src="comics.js"></script>
-
 <script>
     const TAGLINE = 'a webcomic about stuff sometimes';
     const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridays.';
     const PREFIX = 'zyxabc_';
-
-    const COMICS_LIST = [
-        {name: "pop", number: 1},
-        {name: "ex_browser", number: 2}
-    ];
 
     let currentComic = 1;
     let comics = [];
     let totalComics = 0;
 
     function loadComicsFromList() {
+        // use COMICS_LIST from comics.js
+        if (typeof COMICS_LIST === 'undefined') {
+            console.error('COMICS_LIST not found. Ensure comics.js is loaded first.');
+            return;
+        }
         comics = COMICS_LIST.sort((a, b) => a.number - b.number);
         totalComics = comics.length;
         initPage();
@@ -272,31 +194,15 @@
         window.scrollTo(0, 0);
     }
 
-    function nextComic() {
-        if (currentComic < totalComics) loadComic(currentComic + 1);
-    }
-
-    function previousComic() {
-        if (currentComic > 1) loadComic(currentComic - 1);
-    }
-
-    function goToComic(num) {
-        loadComic(num);
-    }
-
-    function goToLatest() {
-        loadComic(totalComics);
-    }
-
-    function randomComic() {
-        const random = Math.floor(Math.random() * totalComics) + 1;
-        loadComic(random);
-    }
+    function nextComic() { if (currentComic < totalComics) loadComic(currentComic + 1); }
+    function previousComic() { if (currentComic > 1) loadComic(currentComic - 1); }
+    function goToComic(num) { loadComic(num); }
+    function goToLatest() { loadComic(totalComics); }
+    function randomComic() { const r = Math.floor(Math.random() * totalComics) + 1; loadComic(r); }
 
     function toggleComicInput() {
         const numberSpan = document.getElementById('comicNumber');
         const input = document.getElementById('comicInput');
-
         if (input.style.display === 'none' || input.style.display === '') {
             numberSpan.style.display = 'none';
             input.style.display = 'inline-block';
