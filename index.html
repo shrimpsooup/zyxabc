@@ -253,8 +253,14 @@ function getComicDisplayName(index) {
 function loadComic(index) {
     if (index < 1 || index > totalComics) return;
     currentComic = index;
+    const comic = comics[index - 1];
     const path = getComicPath(index);
-    document.getElementById('currentComic').src = path;
+
+    const img = document.getElementById('currentComic');
+    img.src = path;
+    img.alt = comic.alt || `comic ${index}`;
+    img.title = comic.alt || ''; // <-- hover text
+
     document.getElementById('comicNumber').textContent = `comic ${index} of ${totalComics}`;
     document.getElementById('comicTitle').textContent = getComicDisplayName(index);
     updateNavigationButtons();
