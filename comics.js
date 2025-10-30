@@ -3,7 +3,7 @@ const COMICS_LIST = [
     {name: "ex_browser", number: 2, alt: "contrary to the last one, this is an experience most of us have had."},
     {name: "abs_therapy", number: 3, alt: "math joke"},
     {name: "osha_compliant", number: 4, alt: "the Grand Canyon, for all the people who can't understand pictures."},
-    {name: "ai_takeover", number: 5},
+    {name: "ai_takeover", number: 5, alt: "we should hook it to the cloud... some kind of sky-network. hmm."},
     {name: "bug_venn_diagram", number: 6, alt: "some bugs are nice"},
     {name: "wasted_plastic", number: 7, alt: "the lorax would not approve."},
     {name: "the_hell_is_this_One_Cubic_Meter_Tungsten_Cube_doing_in_my_living_room", number: 8, alt: "wow, what a steal!"}
