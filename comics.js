@@ -6,5 +6,6 @@ const COMICS_LIST = [
     {name: "ai_takeover", number: 5, alt: "we should hook it to the cloud... some kind of sky-network. hmm."},
     {name: "bug_venn_diagram", number: 6, alt: "some bugs are nice"},
     {name: "wasted_plastic", number: 7, alt: "the lorax would not approve."},
-    {name: "the_hell_is_this_One_Cubic_Meter_Tungsten_Cube_doing_in_my_living_room", number: 8, alt: "wow, what a steal!"}
+    {name: "the_hell_is_this_One_Cubic_Meter_Tungsten_Cube_doing_in_my_living_room", number: 8, alt: "wow, what a steal!"},
+    {name: "work_it_out", number: 9, alt: "the comic does not provide a favored opinion on a ceirtan political party; it is merely a critique on current government behaviors. TL;DR: i dont have an opinion on most politics"}
 ];
