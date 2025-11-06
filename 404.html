@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    const redirectTo = "/" + window.location.pathname.replace(/^\//, "") + window.location.search + window.location.hash;
+    window.location.replace("/#" + redirectTo);
+  </script>
+</head>
+<body></body>
+</html>
