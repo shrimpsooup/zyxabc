@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zyxabc</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #fff;
+            border-bottom: 2px solid #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .banner {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-transform: lowercase;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            color: #666;
+            text-transform: lowercase;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .comic-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .comic-display h2 {
+            text-transform: lowercase;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .comic-display img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .comic-info {
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .comic-info p {
+            margin-bottom: 15px;
+            text-align: justify;
+            text-transform: lowercase;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: arial, sans-serif;
+            text-transform: lowercase;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #555;
+        }
+
+        .nav-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .comic-number {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #333;
+            border-radius: 3px;
+            text-transform: lowercase;
+            display: inline-block;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .comic-number:hover {
+            background-color: #e0e0e0;
+        }
+
+        #comicInput {
+            padding: 8px 12px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            font-family: arial, sans-serif;
+            font-size: 1em;
+            text-transform: lowercase;
+            width: 80px;
+            text-align: center;
+            display: none !important;
+            position: absolute;
+        }
+
+        .archive {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #ddd;
+        }
+
+        .archive h2 {
+            text-transform: lowercase;
+            margin-bottom: 20px;
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .archive-item {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .archive-item:hover {
+            transform: scale(1.05);
+        }
+
+        .archive-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+            text-transform: lowercase;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="banner.png" alt="zyxabc banner" class="banner">
+    <h1>zyxabc</h1>
+    <p class="tagline">a webcomic about stuff sometimes.</p>
+</header>
+
+<div class="container">
+    <div class="comic-display">
+        <h2 id="comicTitle"></h2>
+        <img id="currentComic" src="" alt="current comic strip">
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="firstBtn" onclick="goToComic(1)">first</button>
+        <button class="nav-btn" id="prevBtn" onclick="previousComic()">previous</button>
+        <button class="nav-btn" id="randomBtn" onclick="randomComic()">random</button>
+        <span id="comicNumber" class="comic-number" onclick="toggleComicInput()"></span>
+        <button class="nav-btn" id="nextBtn" onclick="nextComic()">next</button>
+        <button class="nav-btn" id="latestBtn" onclick="goToLatest()">latest</button>
+    </div>
+
+    <div class="comic-info">
+        <p id="comicDescription">zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.</p>
+    </div>
+
+    <div class="archive">
+        <h2>archive</h2>
+        <div class="archive-grid" id="archiveGrid"></div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 zyxabc. all rights reserved. Pro Tip: squint to decipher the blurry text</p>
+</footer>
+
+<input type="number" id="comicInput" onkeyup="handleComicInput(event)" onblur="toggleComicInput()">
+
+<script src="comics.js"></script>
+<script>
+    const TAGLINE = 'a webcomic about stuff sometimes.';
+    const DESCRIPTION = 'zyxabc is made by andre hamghalam. new comics most fridays, if i dont procrastinate. This is a new and unfinished site! eventually i will add more and more features over time.';
+    const PREFIX = 'zyxabc_';
+
+    let currentComic = 1;
+    let comics = [];
+    let totalComics = 0;
+
+    function loadComicsFromList() {
+        comics = COMICS_LIST.sort((a, b) => a.number - b.number);
+        totalComics = comics.length;
+        initPage();
+    }
+
+    function getComicPath(index) {
+        if (index < 1 || index > comics.length) return '';
+        const comic = comics[index - 1];
+        // Build path as: zyxabc_name_number.png (e.g., zyxabc_pop1.png)
+        return `${PREFIX}${comic.name}${comic.number}.png`;
+    }
+
+    function getComicDisplayName(index) {
+        if (index < 1 || index > comics.length) return '';
+        const comic = comics[index - 1];
+        return comic.name.replace(/_/g, ' ');
+    }
+
+
+
+    function countComics() {
+        // Comics already loaded from JSON, no need to count
+        initPage();
+    }
+
+    function loadComic(index) {
+        if (index < 1 || index > totalComics) return;
+        
+        currentComic = index;
+        const path = getComicPath(index);
+        document.getElementById('currentComic').src = path;
+        document.getElementById('comicNumber').textContent = `comic ${index} of ${totalComics}`;
+        document.getElementById('comicNumber').style.display = 'inline-block';
+        document.getElementById('comicInput').style.display = 'none !important';
+        
+        document.getElementById('comicTitle').textContent = getComicDisplayName(index);
+        
+        updateNavigationButtons();
+        window.scrollTo(0, 0);
+    }
+
+    function nextComic() {
+        if (currentComic < totalComics) {
+            loadComic(currentComic + 1);
+        }
+    }
+
+    function previousComic() {
+        if (currentComic > 1) {
+            loadComic(currentComic - 1);
+        }
+    }
+
+    function goToComic(num) {
+        loadComic(num);
+    }
+
+    function goToLatest() {
+        loadComic(totalComics);
+    }
+
+    function randomComic() {
+        const random = Math.floor(Math.random() * totalComics) + 1;
+        loadComic(random);
+    }
+
+    function toggleComicInput() {
+        const numberSpan = document.getElementById('comicNumber');
+        const input = document.getElementById('comicInput');
+        
+        if (input.style.display === 'none !important') {
+            numberSpan.style.display = 'none';
+            input.style.display = 'inline-block !important';
+            input.value = currentComic;
+            input.focus();
+            input.select();
+        }
+    }
+
+    function handleComicInput(e) {
+        if (e.key === 'Enter') {
+            const num = parseInt(e.target.value);
+            if (!isNaN(num)) {
+                loadComic(num);
+            } else {
+                document.getElementById('comicNumber').style.display = 'inline-block';
+                e.target.style.display = 'none !important';
+            }
+        } else if (e.key === 'Escape') {
+            document.getElementById('comicNumber').style.display = 'inline-block';
+            e.target.style.display = 'none !important';
+        }
+    }
+
+    function updateNavigationButtons() {
+        document.getElementById('prevBtn').disabled = currentComic === 1;
+        document.getElementById('firstBtn').disabled = currentComic === 1;
+        document.getElementById('nextBtn').disabled = currentComic === totalComics;
+        document.getElementById('latestBtn').disabled = currentComic === totalComics;
+    }
+
+    function generateArchive() {
+        const grid = document.getElementById('archiveGrid');
+        grid.innerHTML = '';
+        
+        for (let i = 1; i <= totalComics; i++) {
+            const item = document.createElement('div');
+            item.className = 'archive-item';
+            item.onclick = () => loadComic(i);
+            
+            const img = document.createElement('img');
+            img.src = getComicPath(i);
+            img.alt = `comic ${i}`;
+            img.onerror = () => { img.style.display = 'none'; };
+            
+            item.appendChild(img);
+            grid.appendChild(item);
+        }
+    }
+
+    function initPage() {
+        document.querySelector('.tagline').textContent = TAGLINE;
+        document.getElementById('comicDescription').textContent = DESCRIPTION;
+        goToLatest();
+        generateArchive();
+    }
+
+    window.addEventListener('load', loadComicsFromList);
+</script>
+
+</body>
+</html>
