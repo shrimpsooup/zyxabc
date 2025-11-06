@@ -152,7 +152,7 @@ h1 {
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s;
-    aspect-ratio: 1 / 1; /* square tiles */
+    aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -250,7 +250,7 @@ function getComicDisplayName(index) {
     return comic.name.replace(/_/g, ' ');
 }
 
-function loadComic(index) {
+function loadComic(index, skipPush = false) {
     if (index < 1 || index > totalComics) return;
     currentComic = index;
     const comic = comics[index - 1];
@@ -259,22 +259,20 @@ function loadComic(index) {
     const img = document.getElementById('currentComic');
     img.src = path;
     img.alt = comic.alt || `comic ${index}`;
-    img.title = comic.alt || ''; // <-- hover text
+    img.title = comic.alt || '';
 
     document.getElementById('comicNumber').textContent = `comic ${index} of ${totalComics}`;
     document.getElementById('comicTitle').textContent = getComicDisplayName(index);
     updateNavigationButtons();
     window.scrollTo(0, 0);
+
+    if (!skipPush) {
+        window.history.pushState({ comic: index }, '', `/${index}`);
+    }
 }
 
-function nextComic() {
-    if (currentComic < totalComics) loadComic(currentComic + 1);
-}
-
-function previousComic() {
-    if (currentComic > 1) loadComic(currentComic - 1);
-}
-
+function nextComic() { if (currentComic < totalComics) loadComic(currentComic + 1); }
+function previousComic() { if (currentComic > 1) loadComic(currentComic - 1); }
 function goToComic(num) { loadComic(num); }
 function goToLatest() { loadComic(totalComics); }
 function randomComic() { loadComic(Math.floor(Math.random() * totalComics) + 1); }
@@ -315,7 +313,6 @@ function generateArchive() {
     const grid = document.getElementById('archiveGrid');
     grid.innerHTML = '';
 
-    // pick up to 5 random comics
     let indexes = [...Array(totalComics).keys()].map(i => i + 1);
     if (totalComics > 5) {
         indexes.sort(() => Math.random() - 0.5);
@@ -335,16 +332,28 @@ function generateArchive() {
     }
 }
 
+function getComicNumberFromPath() {
+    const path = window.location.pathname.replace('/', '').trim();
+    const num = parseInt(path);
+    if (!isNaN(num) && num >= 1 && num <= totalComics) return num;
+    return totalComics;
+}
+
 function initPage() {
     document.querySelector('.tagline').textContent = TAGLINE;
     document.getElementById('comicDescription').textContent = DESCRIPTION;
-    goToLatest();
+
+    const initialComic = getComicNumberFromPath();
+    loadComic(initialComic, true);
     generateArchive();
 }
+
+window.addEventListener('popstate', e => {
+    if (e.state && e.state.comic) loadComic(e.state.comic, true);
+});
 
 window.addEventListener('load', loadComicsFromList);
 </script>
 
 </body>
 </html>
-
