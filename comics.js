@@ -10,5 +10,7 @@ const COMICS_LIST = [
     {name: "work_it_out", number: 9, alt: "i dont have an opinion on most politics"},
     {name: "the_day", number: 10, alt: "being a background was, like, soooo yesterday."},
     {name: "banana_one", number: 11, alt: "banana generously provided by International Banana Standardization Society"},
-    {name: "square_roots", number: 12, alt: "why is it getting bigger..."}
+    {name: "square_roots", number: 12, alt: "why is it getting bigger"},
+    {name: "nice_desk", number: 13, alt: "my desk broke apart in the box and i dont want to fix it :("}
+    
 ];
