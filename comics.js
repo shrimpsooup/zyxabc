@@ -6,7 +6,7 @@ const COMICS_LIST = [
     {name: "ai_takeover", number: 5, alt: "we should hook it to the cloud... some kind of sky-network. hmm."},
     {name: "bug_venn_diagram", number: 6, alt: "some bugs are nice"},
     {name: "wasted_plastic", number: 7, alt: "the lorax would not approve."},
-    {name: "the_hell_is_this_One_Cubic_Meter_Tungsten_Cube_doing_in_my_living_room", number: 8, alt: "notice how the trademark looks kinda weird? it's almost like futre me had to fix a mistake or something. anyways, what a steal!"},
+    {name: "the_hell_is_this_One_Cubic_Meter_Tungsten_Cube_doing_in_my_living_room", number: 8, alt: "notice how the trademark looks kinda weird? it's almost like futre me had to fix a mistake or something. And by the way, notice how future is misspelled? Isn't it a bit ironic that my ironic remark about fixing a previous mistake has it's own ironic remarc, which i sure hope has no ironic mistake? how ironic. anyways, what a steal!"},
     {name: "work_it_out", number: 9, alt: "i dont have an opinion on most politics"},
     {name: "the_day", number: 10, alt: "being a background was, like, soooo yesterday."},
     {name: "banana_one", number: 11, alt: "banana generously provided by International Banana Standardization Society"},
